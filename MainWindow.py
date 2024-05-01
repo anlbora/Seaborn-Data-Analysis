@@ -3,8 +3,6 @@ import seaborn as sns
 import pandas as pd
 from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox, QVBoxLayout, QLabel, QGraphicsView
 import matplotlib.pyplot as plt
-from scipy.stats import norm
-import numpy as np
 
 
 class Ui_MainWindow(object):
