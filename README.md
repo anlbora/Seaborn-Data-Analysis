@@ -2,9 +2,9 @@
 
 The Data Analysis Program is a desktop application developed with PyQt5, Pandas, Seaborn, and Matplotlib to facilitate data exploration, analysis, and visualization. This program provides a user-friendly interface for loading datasets, exploring their structures, generating descriptive statistics, conducting correlation analysis, and more.
 
-    ![1](https://github.com/anlbora/Seaborn-Data-Analysis/assets/100442507/7654501c-d078-43f2-9bf4-f68d1a26986e
-    
-    ![2](https://github.com/anlbora/Seaborn-Data-Analysis/assets/100442507/b0a7e888-bba7-4c39-bf99-54b8ca8dbfa6).
+![1](https://github.com/anlbora/Seaborn-Data-Analysis/assets/100442507/7654501c-d078-43f2-9bf4-f68d1a26986e)
+
+![2](https://github.com/anlbora/Seaborn-Data-Analysis/assets/100442507/b0a7e888-bba7-4c39-bf99-54b8ca8dbfa6)
 
 ## Features
 
