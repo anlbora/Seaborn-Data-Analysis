@@ -16,7 +16,7 @@ The Data Analysis Program is a desktop application developed with PyQt5, Pandas,
     
     ![5](https://github.com/anlbora/Seaborn-Data-Analysis/assets/100442507/5d24c140-b2d8-4089-a91c-5c6675cc5073)
 
-- **Data Editing for Machine Learning**: Fill the none values and encode the non numeric data types to be a data that can be used in machine learning
+- **Data Editing for Machine Learning**: Fill the none values and encode the non numeric data types to be a data that can be used in machine learning.
   
   ![6](https://github.com/anlbora/Seaborn-Data-Analysis/assets/100442507/62eacae2-4334-49a3-b856-86bc40a0618b)
   
@@ -49,6 +49,7 @@ The Data Analysis Program is a desktop application developed with PyQt5, Pandas,
 - **Advanced Statistical Analysis:** Integrate advanced statistical analysis tools and algorithms to enable users to perform more complex data analysis tasks, including regression analysis, clustering, and predictive modeling.
 - **Data Preprocessing Tools:** Incorporate data preprocessing functionalities such as missing value imputation, outlier detection, feature scaling, and transformation to streamline the data preparation process before analysis.
 - **Integration with Machine Learning Libraries:** Allow seamless integration with popular machine learning libraries such as scikit-learn and TensorFlow to enable users to build and evaluate machine learning models directly within the application.
+- **User Input for Machine Learning:** Allow user to input their own parameters to predict instead of random input.
 
 
 
