@@ -1,14 +1,16 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import seaborn as sns
 import pandas as pd
-from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox, QVBoxLayout, QLabel, QGraphicsView, QApplication, QFileDialog
+from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox, QVBoxLayout, QLabel, QComboBox, QApplication, QFileDialog, QMainWindow
 import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split, cross_validate
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.metrics import mean_squared_error, mean_absolute_error, accuracy_score, r2_score, classification_report, confusion_matrix
 import joblib
 import numpy as np
+import Predict
+import DataInfo
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -19,10 +21,11 @@ pd.set_option("display.width", 500)
 pd.set_option("display.float_format", lambda x: "%.4f" % x)
 
 
-class Ui_MainWindow(object):
-
+class Ui_MainWindow(QMainWindow):
     def __init__(self):
+        super(Ui_MainWindow, self).__init__()
         self.dataFrame = None
+        self.setupUi(self)
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -116,9 +119,9 @@ class Ui_MainWindow(object):
         self.btn_load_data = QtWidgets.QPushButton(self.groupBox)
         self.btn_load_data.setObjectName("btn_load_data")
         self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.btn_load_data)
-        self.chkBox_data = QtWidgets.QCheckBox(self.groupBox)
-        self.chkBox_data.setObjectName("chkBox_data")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.chkBox_data)
+        self.btn_opendata = QtWidgets.QPushButton(self.groupBox)
+        self.btn_opendata.setObjectName("btn_opendata")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.btn_opendata)
         self.verticalLayout_6.addLayout(self.formLayout)
         self.groupBox_3 = QtWidgets.QGroupBox(self.groupBox)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
@@ -141,13 +144,15 @@ class Ui_MainWindow(object):
         self.formLayout_2.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.btn_Encode)
         self.txt_TargetName = QtWidgets.QLineEdit(self.layoutWidget)
         self.txt_TargetName.setObjectName("txt_TargetName")
-        self.formLayout_2.setWidget(1, QtWidgets.QFormLayout.SpanningRole, self.txt_TargetName)
+        self.formLayout_2.setWidget(2, QtWidgets.QFormLayout.SpanningRole, self.txt_TargetName)
+        self.txt_zeroColumnNames = QtWidgets.QLineEdit(self.layoutWidget)
+        self.txt_zeroColumnNames.setText("")
+        self.txt_zeroColumnNames.setDragEnabled(True)
+        self.txt_zeroColumnNames.setObjectName("txt_zeroColumnNames")
+        self.formLayout_2.setWidget(1, QtWidgets.QFormLayout.SpanningRole, self.txt_zeroColumnNames)
         self.btn_RFModel = QtWidgets.QPushButton(self.layoutWidget)
         self.btn_RFModel.setObjectName("btn_RFModel")
-        self.formLayout_2.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.btn_RFModel)
-        self.chk_SaveModel = QtWidgets.QCheckBox(self.layoutWidget)
-        self.chk_SaveModel.setObjectName("chk_SaveModel")
-        self.formLayout_2.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.chk_SaveModel)
+        self.formLayout_2.setWidget(3, QtWidgets.QFormLayout.SpanningRole, self.btn_RFModel)
         self.btn_Predict = QtWidgets.QPushButton(self.layoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -155,7 +160,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.btn_Predict.sizePolicy().hasHeightForWidth())
         self.btn_Predict.setSizePolicy(sizePolicy)
         self.btn_Predict.setObjectName("btn_Predict")
-        self.formLayout_2.setWidget(3, QtWidgets.QFormLayout.SpanningRole, self.btn_Predict)
+        self.formLayout_2.setWidget(4, QtWidgets.QFormLayout.SpanningRole, self.btn_Predict)
         self.verticalLayout_6.addWidget(self.groupBox_3)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
@@ -249,6 +254,7 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.table_data, self.txt_shape)
 
         self.btn_load_data.clicked.connect(self.load_data)
+        self.btn_opendata.clicked.connect(self.open_data)
         self.btn_shape.clicked.connect(self.show_shape)
         self.btn_head.clicked.connect(self.show_df_head)
         self.btn_tail.clicked.connect(self.show_df_tail)
@@ -288,13 +294,13 @@ class Ui_MainWindow(object):
         self.btn_data_describe.setText(_translate("MainWindow", "Data Describe"))
         self.btn_load_data.setToolTip(_translate("MainWindow", "Loads the example dataset from the seaborn library"))
         self.btn_load_data.setText(_translate("MainWindow", "Load Data"))
-        self.chkBox_data.setText(_translate("MainWindow", "Chose File"))
+        self.btn_opendata.setText(_translate("MainWindow", "Open Data"))
         self.groupBox_3.setTitle(_translate("MainWindow", "Create Machine Learning Model"))
         self.btn_FillNoneValues.setText(_translate("MainWindow", "Fill NA Values"))
         self.btn_Encode.setText(_translate("MainWindow", "Encode"))
         self.txt_TargetName.setPlaceholderText(_translate("MainWindow", "Target Name"))
+        self.txt_zeroColumnNames.setPlaceholderText(_translate("MainWindow", "Column Names Exception"))
         self.btn_RFModel.setText(_translate("MainWindow", "RF Model"))
-        self.chk_SaveModel.setText(_translate("MainWindow", "Save Model"))
         self.btn_Predict.setText(_translate("MainWindow", "Predict"))
         self.ckBox_summary_plot.setText(_translate("MainWindow", "Plot"))
         self.txt_summary_name.setToolTip(_translate("MainWindow", "To see all categorical or numerical column summaries, dont click plot. To see the plot for specific column summary click plot"))
@@ -324,31 +330,67 @@ class Ui_MainWindow(object):
             DataFrame or None: Loaded DataFrame if successful, None otherwise.
         """
         try:
-            if self.dataFrame is not None:
-                # If data is already loaded, return it directly
-                return self.dataFrame
 
-            if not self.chkBox_data.isChecked():
-                data_name = self.txt_data_name.text().strip()
+            data_name = self.txt_data_name.text().strip()
                 
-                if data_name == "":
-                    QMessageBox.warning(None, "Error", "Please enter a dataset name.")
-                    return None
+            if data_name == "":
+                QMessageBox.warning(None, "Error", "Please enter a dataset name.")
+                return None
                 
                 # Load the dataset using Seaborn and convert it to a pandas DataFrame
-                data = sns.load_dataset(data_name)
-                self.dataFrame = pd.DataFrame(data)
-            else:
-                dataset_path, _ = QFileDialog.getOpenFileName(None, "Select Dataset File", "", "CSV Files (*.csv);;All Files (*)")
-                if not dataset_path:
-                    QMessageBox.warning(None, "Error", "No file selected.")
-                    return None
 
-                self.dataFrame = pd.read_csv(dataset_path)
+            data = sns.load_dataset(data_name)
+            self.dataFrame = pd.DataFrame(data)
                 
             # Disable the text input field to prevent further changes
             self.txt_data_name.setEnabled(False)
 
+            # Get the dimensions of the DataFrame
+            num_rows, num_cols = self.dataFrame.shape
+
+            # Clear any existing content in the table widget
+            self.table_data.clear()
+
+            # Set the number of rows and columns in the table widget
+            self.table_data.setRowCount(num_rows)
+            self.table_data.setColumnCount(num_cols)
+
+            # Set column names based on the DataFrame's columns
+            column_names = list(self.dataFrame.columns)
+            self.table_data.setHorizontalHeaderLabels(column_names)
+
+            # Populate the table widget with data from the DataFrame
+            for i in range(num_rows):
+                for j in range(num_cols):
+                    item = QTableWidgetItem(str(self.dataFrame.iat[i, j]))
+                    self.table_data.setItem(i, j, item)
+
+            return self.dataFrame
+
+        except Exception as e:
+            # If an error occurs, display a warning message with details of the error
+            QMessageBox.warning(None, "Error", f"An error occurred: {e}")
+            return None
+        
+    def open_data(self):
+        """
+        Load data from a dataset specified by the user input and populate a QTableWidget.
+
+        This method interacts with a graphical user interface (GUI) to load a dataset using
+        the Seaborn library, display the data in a table widget, and handle any potential errors.
+
+        Returns:
+            DataFrame or None: Loaded DataFrame if successful, None otherwise.
+        """
+        try:
+            
+            dataset_path, _ = QFileDialog.getOpenFileName(None, "Select Dataset File", "", "CSV Files (*.csv);;All Files (*)")
+            if not dataset_path:
+                QMessageBox.warning(None, "Error", "No file selected.")
+                return None
+
+            self.dataFrame = pd.read_csv(dataset_path)
+                
             # Get the dimensions of the DataFrame
             num_rows, num_cols = self.dataFrame.shape
 
@@ -393,11 +435,10 @@ class Ui_MainWindow(object):
                                 of the error.
         """
         try:
-            dataFrame = self.load_data()
 
-            if dataFrame is not None:
+            if self.dataFrame is not None:
                 # Calculate the number of rows and columns in the DataFrame
-                num_rows, num_cols = dataFrame.shape
+                num_rows, num_cols = self.dataFrame.shape
 
                 # Create a string representation of the shape (number of rows and columns)
                 shape = f"{num_rows} - {num_cols}"
@@ -427,9 +468,9 @@ class Ui_MainWindow(object):
                                 details of the error.
         """
         try:
-            dataFrame = self.load_data()
 
-            if dataFrame is not None:
+
+            if self.dataFrame is not None:
 
                 if self.txt_head_number.text() == "":
                     QMessageBox.warning(None, "Error", f"Please type a head number.")
@@ -439,7 +480,7 @@ class Ui_MainWindow(object):
                     head = int(self.txt_head_number.text())
 
                     # Get the first few rows of the DataFrame
-                    head_dataFrame = dataFrame.head(head)
+                    head_dataFrame = self.dataFrame.head(head)
 
                     # Get the dimensions of the DataFrame
                     num_rows, num_cols = head_dataFrame.shape
@@ -487,9 +528,8 @@ class Ui_MainWindow(object):
                                 details of the error.
         """
         try:
-            dataFrame = self.load_data()
 
-            if dataFrame is not None:
+            if self.dataFrame is not None:
 
                 if self.txt_head_number.text() == "":
                     QMessageBox.warning(None, "Error", f"Please type a tail number.")
@@ -498,7 +538,7 @@ class Ui_MainWindow(object):
                     tail = int(self.txt_head_number.text())
 
                     # Get the last few rows of the DataFrame
-                    tail_dataFrame = dataFrame.tail(tail)
+                    tail_dataFrame = self.dataFrame.tail(tail)
 
                     # Get the dimensions of the DataFrame
                     num_rows, num_cols = tail_dataFrame.shape
@@ -548,11 +588,10 @@ class Ui_MainWindow(object):
         """
 
         try:
-            dataFrame = self.load_data()
 
-            if dataFrame is not None:
+            if self.dataFrame is not None:
                 # Get the column names from the DataFrame
-                column_names = list(dataFrame.columns)
+                column_names = list(self.dataFrame.columns)
 
                 # Clear existing content and set column names in the table widget
                 self.table_data.clear()
@@ -560,7 +599,7 @@ class Ui_MainWindow(object):
                 self.table_data.setHorizontalHeaderLabels(column_names)
 
                 # Retrieve the data types of columns from the DataFrame
-                dataTypes = dataFrame.dtypes
+                dataTypes = self.dataFrame.dtypes
 
                 # Display data types in the first row of the table widget
                 for i, column_name in enumerate(column_names):
@@ -592,31 +631,24 @@ class Ui_MainWindow(object):
         """
 
         try:
-            dataFrame = self.load_data()
+            # Clear any existing content in the table widget
+            self.table_data.clear()
 
-            if dataFrame is not None:
-                # Get the dimensions of the DataFrame
-                num_rows, num_cols = dataFrame.shape
+            self.txt_data_name.setEnabled(True)
 
-                # Clear any existing content in the table widget
-                self.table_data.clear()
+            num_rows, num_cols = self.dataFrame.shape
 
-                # Set the number of rows and columns in the table widget
-                self.table_data.setRowCount(num_rows)
-                self.table_data.setColumnCount(num_cols)
+            self.table_data.setRowCount(num_rows)
+            self.table_data.setColumnCount(num_cols)
 
-                # Set column names based on the DataFrame's columns
-                column_names = list(dataFrame.columns)
-                self.table_data.setHorizontalHeaderLabels(column_names)
+            column_names = list(self.dataFrame.columns)
+            self.table_data.setHorizontalHeaderLabels(column_names)
 
-                # Populate the table widget with data from the DataFrame
-                for i in range(num_rows):
-                    for j in range(num_cols):
-                        item = QTableWidgetItem(str(dataFrame.iat[i, j]))
-                        self.table_data.setItem(i, j, item)
-
-                # Enable the data name input field
-                self.txt_data_name.setEnabled(True)
+            # Populate the table widget with data from the DataFrame
+            for i in range(num_rows):
+                for j in range(num_cols):
+                    item = QTableWidgetItem(str(self.dataFrame.iat[i, j]))
+                    self.table_data.setItem(i, j, item)
 
         except Exception as e:
             # Handle any unexpected exceptions
@@ -639,20 +671,28 @@ class Ui_MainWindow(object):
                                 details of the error.
         """
         try:
-            dataFrame = self.load_data()
 
-            if dataFrame is not None:
+            zero_columns = self.txt_zeroColumnNames.text()
+            zero_columns_list = [item.strip() for item in zero_columns.split(',')]
+
+            zero_columns = [col for col in self.dataFrame.columns if (self.dataFrame[col].min() == 0) and col not in zero_columns_list]
+
+            for col in zero_columns:
+                self.dataFrame[col] = np.where(self.dataFrame[col] == 0, np.nan, self.dataFrame[col])
+
+            if self.dataFrame is not None:
                 # Get the column names from the DataFrame
-                column_names = list(dataFrame.columns)
+                column_names = list(self.dataFrame.columns)
 
-                # Clear existing content and set column names in the table widget
+                # Clear existing content, set column names, and define row count in the table widget
                 self.table_data.clear()
                 self.table_data.setColumnCount(len(column_names))
+                self.table_data.setRowCount(1)
                 self.table_data.setHorizontalHeaderLabels(column_names)
 
                 # Count the number of null values in each column and display in the first row
                 for i, column_name in enumerate(column_names):
-                    num_nulls = dataFrame[column_name].isnull().sum()
+                    num_nulls = self.dataFrame[column_name].isnull().sum()
                     item = QTableWidgetItem(str(num_nulls))
                     self.table_data.setItem(0, i, item)
 
@@ -685,14 +725,13 @@ class Ui_MainWindow(object):
                                 details of the error.
         """
         try:
-            dataFrame = self.load_data()
 
-            if dataFrame is not None:
+            if self.dataFrame is not None:
                 # Clear existing content in the table widget
                 self.table_data.clear()
 
                 # Compute descriptive statistics and transpose the result for easier display
-                described_data = dataFrame.describe().T
+                described_data = self.dataFrame.describe().T
 
                 # Set the number of rows and columns in the table widget
                 self.table_data.setRowCount(len(described_data))
@@ -743,49 +782,33 @@ class Ui_MainWindow(object):
                                 details of the error.
         """
         try:
-            dataFrame = self.load_data()
-
-            if dataFrame is not None:
-                # Create a message box
-                msg_box = QMessageBox()
-                msg_box.setWindowTitle("Data Information")
-
-                # Add a label for each column's information
-                for column_name in dataFrame.columns:
+            if self.dataFrame is not None:
+                info_text = ""
+                for column_name in self.dataFrame.columns:
                     # Gather column information
-                    data_type = str(dataFrame[column_name].dtype)
-                    non_null_count = dataFrame[column_name].notnull().sum()
-                    total_count = len(dataFrame[column_name])
+                    data_type = str(self.dataFrame[column_name].dtype)
+                    non_null_count = self.dataFrame[column_name].notnull().sum()
+                    total_count = len(self.dataFrame[column_name])
 
-                    # Construct information text
-                    info_text = (f"Column Name: {column_name}\n"
+                    # Append column information to the info_text
+                    info_text += (f"Column Name: {column_name}\n"
                                 f"Data Type: {data_type}\n"
                                 f"Non-null Count: {non_null_count}/{total_count}\n"
                                 f"----------------------------------------------\n")
 
-                    # Create a label with the information text
-                    info_label = QLabel(info_text)
-                    info_label.setMinimumSize(300, 100)
-
-                    # Add the label to the message box layout
-                    msg_box.layout().addWidget(info_label)
-
-                # Set the message box to be modal
-                msg_box.setModal(True)
-
-                # Show the message box
-                msg_box.exec_()
+                # Create and show the DataInfo dialog
+                self.dataInfoForm = DataInfo.Ui_DataInfo(info_text)
+                self.dataInfoForm.setupUi()
+                self.dataInfoForm.load_DataInfo()
+                self.dataInfoForm.show()
 
         except ValueError as ve:
-            # Handle ValueError (e.g., invalid input or operation)
             QMessageBox.warning(None, "Value Error", f"An error occurred: {ve}")
 
         except TypeError as te:
-            # Handle TypeError (e.g., invalid type conversion)
             QMessageBox.warning(None, "Type Error", f"An error occurred: {te}")
 
         except Exception as e:
-            # Handle any other unexpected exceptions
             QMessageBox.warning(None, "Error", f"An error occurred: {e}")
 
     def grab_col_names(self, dataframe, cat_th=10, car_th=20):
@@ -855,86 +878,81 @@ class Ui_MainWindow(object):
                                 a warning message dialog is displayed to the user with
                                 details of the error.
         """
-
         try:
-            # Load the dataset
-            dataFrame = self.load_data()
-
-            if dataFrame is not None:
+            if self.dataFrame is not None:
                 # Get categorical and numerical columns
-                cat_cols, num_cols, _, _ = self.grab_col_names(dataFrame)
+                cat_cols, num_cols, _, _ = self.grab_col_names(self.dataFrame)
                 col_name = self.txt_summary_name.text()
 
-                # Check if the specified column name is in categorical columns
-                if col_name in cat_cols:
-                    # Generate summary for categorical column
-                    if self.ckBox_summary_plot.isChecked():
-                        # Show count plot with percentages
-                        ax = sns.countplot(x=col_name, data=dataFrame)
-                        for p in ax.patches:
-                            height = p.get_height()
-                            ratio = height / len(dataFrame) * 100
-                            ax.annotate(f'{height} ({ratio:.2f}%)', (p.get_x() + p.get_width() / 2., height),
-                                        ha='center', va='center', fontsize=11, color='black', xytext=(0, 5),
-                                        textcoords='offset points')
-                        plt.show(block=True)
-                    else:
-                        # Display categorical data information in a message box
-                        msg_box = QMessageBox()
-                        msg_box.setWindowTitle("Categorical Data Information")
-                        layout = msg_box.layout()
-                        for column_name in cat_cols:
-                            ratios = 100 * dataFrame[column_name].value_counts() / len(dataFrame)
-                            info_text = (
-                                f"---------------------------------------------------------\n"
+                info_text = ""
+
+                if col_name == "":
+                        # Gather categorical data information
+                        for column_name in self.dataFrame.columns:
+                            ratios = 100 * self.dataFrame[column_name].value_counts() / len(self.dataFrame)
+                            info_text += (
                                 f"Ratio of {column_name}:\n{ratios}\n"
                                 f"---------------------------------------------------------\n"
-                            )
-                            info_label = QLabel(info_text)
-                            info_label.setMinimumSize(300, 100)
-                            layout.addWidget(info_label)
-                        msg_box.setModal(True)
-                        msg_box.exec_()
+                                )
+                        self.dataInfoForm = DataInfo.Ui_DataInfo(info_text)
+                        self.dataInfoForm.setupUi()
+                        self.dataInfoForm.load_DataInfo()
+                        self.dataInfoForm.show()
 
                 # Check if the specified column name is in numerical columns
-                elif col_name in num_cols:
-                    # Generate summary for numerical column
-                    if self.ckBox_summary_plot.isChecked():
-                        # Show histogram with KDE
-                        sns.histplot(x=col_name, data=dataFrame, kde=True)
-                        plt.show(block=True)
-                    else:
-                        # Display numerical data information in a message box
-                        msg_box = QMessageBox()
-                        msg_box.setWindowTitle("Numerical Data Information")
-                        layout = msg_box.layout()
-                        for column_name in num_cols:
-                            ratios = 100 * dataFrame[column_name].value_counts() / len(dataFrame)
+                elif col_name != "":
+                    if col_name in cat_cols:
+                        # Generate summary for categorical column
+                        if self.ckBox_summary_plot.isChecked():
+                            # Show count plot with percentages
+                            ax = sns.countplot(x=col_name, data=self.dataFrame)
+                            for p in ax.patches:
+                                height = p.get_height()
+                                ratio = height / len(self.dataFrame) * 100
+                                ax.annotate(f'{height} ({ratio:.2f}%)', (p.get_x() + p.get_width() / 2., height),
+                                            ha='center', va='center', fontsize=11, color='black', xytext=(0, 5),
+                                            textcoords='offset points')
+                            plt.show(block=True)
+                        else:
+                            ratios = 100 * self.dataFrame[col_name].value_counts() / len(self.dataFrame)
                             info_text = (
-                                f"---------------------------------------------------------\n"
                                 f"Ratio of {column_name}:\n{ratios}\n"
                                 f"---------------------------------------------------------\n"
                             )
-                            info_label = QLabel(info_text)
-                            info_label.setMinimumSize(300, 100)
-                            layout.addWidget(info_label)
-                        msg_box.setModal(True)
-                        msg_box.exec_()
+                            self.dataInfoForm = DataInfo.Ui_DataInfo(info_text)
+                            self.dataInfoForm.setupUi()
+                            self.dataInfoForm.load_DataInfo()
+                            self.dataInfoForm.show()
 
-                else:
-                    # Display a message for invalid column name
-                    print("Invalid input: column name not found in categorical or numerical columns")
+                    elif col_name in num_cols:
+                            # Generate summary for numerical column
+                        if self.ckBox_summary_plot.isChecked():
+                                # Show histogram with KDE
+                            sns.histplot(x=col_name, data=self.dataFrame, kde=True)
+                            plt.show(block=True)
+                        else:
+                            ratios = 100 * self.dataFrame[col_name].value_counts() / len(self.dataFrame)
+                            info_text = (
+                                f"Ratio of {col_name}:\n{ratios}\n"
+                                f"---------------------------------------------------------\n"
+                            )
+                            self.dataInfoForm = DataInfo.Ui_DataInfo(info_text)
+                            self.dataInfoForm.setupUi()
+                            self.dataInfoForm.load_DataInfo()
+                            self.dataInfoForm.show()
 
+            else:
+                # Display a message for invalid column name
+                QMessageBox.warning(None, "Invalid Input", "The specified column name is not found in categorical or numerical columns.")
+                return
+                
         except ValueError as ve:
-            # Handle ValueError (e.g., invalid input or operation)
             QMessageBox.warning(None, "Value Error", f"An error occurred: {ve}")
 
         except TypeError as te:
-            # Handle TypeError (e.g., invalid type conversion)
             QMessageBox.warning(None, "Type Error", f"An error occurred: {te}")
 
         except Exception as e:
-            # Handle any other unexpected exceptions
             QMessageBox.warning(None, "Error", f"An error occurred: {e}")
 
     def target_summary(self):
@@ -953,7 +971,6 @@ class Ui_MainWindow(object):
                                 a warning message dialog is displayed to the user with
                                 details of the error.
         """
-
         try:
             # Load the dataset if not already loaded
             if not hasattr(self, 'dataFrame') or self.dataFrame is None:
@@ -967,12 +984,25 @@ class Ui_MainWindow(object):
                 target = self.txt_target.text()
                 summary_name = self.txt_target_summary_name.text()
 
-                # Check if the summary column exists in categorical or numerical columns
-                if summary_name in cat_cols:
+                info_text = ""
+
+                if summary_name == "":
+                    # Gather data information for all columns
+                    for column_name in self.dataFrame.columns:
+                        ratios = 100 * self.dataFrame[column_name].value_counts() / len(self.dataFrame)
+                        info_text += (
+                            f"Ratio of {column_name}:\n{ratios}\n"
+                            f"---------------------------------------------------------\n"
+                        )
+                    self.dataInfoForm = DataInfo.Ui_DataInfo(info_text)
+                    self.dataInfoForm.setupUi()
+                    self.dataInfoForm.load_DataInfo()
+                    self.dataInfoForm.show()
+
+                elif summary_name in cat_cols:
                     # Summary with categorical data
                     targeted_data = pd.DataFrame({"Target Mean": self.dataFrame.groupby(summary_name)[target].mean()})
-                    
-                    # Display summary with a bar chart if requested
+
                     if self.ckBox_plot_target.isChecked():
                         plt.figure(figsize=(10, 6))
                         sns.barplot(x=targeted_data.index, y="Target Mean", data=targeted_data, palette="viridis")
@@ -981,28 +1011,23 @@ class Ui_MainWindow(object):
                         plt.title(f'Mean of {target} by {summary_name}')
                         plt.xticks(rotation=45, ha='right')
                         plt.tight_layout()
-                        plt.show()
+                        plt.show(block=True)
                     else:
-                        # Display summary in a message box
-                        msg_box = QMessageBox()
-                        msg_box.setWindowTitle("Target Summary with Categorical Data")
-                        layout = msg_box.layout()
                         for category, mean in targeted_data.iterrows():
-                            info_text = (
+                            info_text += (
                                 f"----------------------------------------\n"
                                 f"{summary_name}: {category}\nTarget Mean: {mean['Target Mean']}\n"
-                                f"----------------------------------------\n")
-                            info_label = QLabel(info_text)
-                            info_label.setMinimumSize(300, 100)
-                            layout.addWidget(info_label)
-                        msg_box.setModal(True)
-                        msg_box.exec_()
+                                f"----------------------------------------\n"
+                            )
+                        self.dataInfoForm = DataInfo.Ui_DataInfo(info_text)
+                        self.dataInfoForm.setupUi()
+                        self.dataInfoForm.load_DataInfo()
+                        self.dataInfoForm.show()
 
                 elif summary_name in num_cols:
                     # Summary with numerical data
                     targeted_data = pd.DataFrame({"Target Mean": self.dataFrame.groupby(summary_name)[target].mean()})
-                    
-                    # Display summary with a box plot if requested
+
                     if self.ckBox_plot_target.isChecked():
                         plt.figure(figsize=(10, 6))
                         sns.boxplot(x=target, y=summary_name, data=self.dataFrame, palette="viridis")
@@ -1011,36 +1036,29 @@ class Ui_MainWindow(object):
                         plt.title(f'{summary_name} by {target}')
                         plt.xticks(rotation=45, ha='right')
                         plt.tight_layout()
-                        plt.show()
+                        plt.show(block=True)
                     else:
-                        # Display summary in a message box
-                        msg_box = QMessageBox()
-                        msg_box.setWindowTitle("Target Summary with Numerical Data")
-                        layout = msg_box.layout()
                         for category, mean in targeted_data.iterrows():
-                            info_text = (
-                                f"{target}: {category}\nTarget Mean: {mean['Target Mean']}\n"
-                                f"--------------------------\n")
-                            info_label = QLabel(info_text)
-                            info_label.setMinimumSize(300, 100)
-                            layout.addWidget(info_label)
-                        msg_box.setModal(True)
-                        msg_box.exec_()
+                            info_text += (
+                                f"{summary_name}: {category}\nTarget Mean: {mean['Target Mean']}\n"
+                                f"--------------------------\n"
+                            )
+                        self.dataInfoForm = DataInfo.Ui_DataInfo(info_text)
+                        self.dataInfoForm.setupUi()
+                        self.dataInfoForm.load_DataInfo()
+                        self.dataInfoForm.show()
 
                 else:
-                    # Display a warning if the target column is not found in the dataset
-                    QMessageBox.warning(None, "Warning", "Target columns cannot be found in the dataset. Please make sure you typed it correctly.")
+                    QMessageBox.warning(None, "Invalid Input", "The specified column name is not found in categorical or numerical columns.")
+                    return
 
         except ValueError as ve:
-            # Handle ValueError (e.g., invalid input or operation)
             QMessageBox.warning(None, "Value Error", f"An error occurred: {ve}")
 
         except TypeError as te:
-            # Handle TypeError (e.g., invalid type conversion)
             QMessageBox.warning(None, "Type Error", f"An error occurred: {te}")
 
         except Exception as e:
-            # Handle any other unexpected exceptions
             QMessageBox.warning(None, "Error", f"An error occurred: {e}")
 
     def correlation_analysis(self, corr_th=0.90):
@@ -1199,15 +1217,6 @@ class Ui_MainWindow(object):
         This method trains a Random Forest model, optionally displays results in a message box,
         plots feature importance, and saves the model to a file.
 
-        Args:
-            dataframe (pd.DataFrame): The DataFrame containing the data.
-            target (str): The target variable name.
-            test_size (float): Proportion of the dataset to include in the test split. Default is 0.20.
-            cv (int): Number of cross-validation folds. Default is 10.
-            results (bool): Whether to display evaluation results in a message box. Default is False.
-            plot_importance (bool): Whether to plot feature importance. Default is False.
-            save_results (bool): Whether to save the trained model to a file. Default is False.
-
         Returns:
             None
 
@@ -1223,13 +1232,18 @@ class Ui_MainWindow(object):
             X = self.dataFrame.drop(target, axis=1)
             y = self.dataFrame[target]
             test_size = 0.20  # Set test_size here
-            cv=10
+            cv = 10
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=1)
-            
-            # Train the Random Forest model
-            rf_model = RandomForestRegressor(random_state=1).fit(X_train, y_train)
-            
 
+            # Determine if the target variable is categorical or continuous
+            if y.dtype == 'object' or y.dtype.name == 'category':
+                model_type = "classifier"
+                rf_model = RandomForestClassifier(random_state=1).fit(X_train, y_train)
+            else:
+                model_type = "regressor"
+                rf_model = RandomForestRegressor(random_state=1).fit(X_train, y_train)
+
+            # Plot feature importance
             feature_imp = pd.DataFrame({'Value': rf_model.feature_importances_, 'Feature': X.columns})
             plt.figure(figsize=(8, 6))
             sns.barplot(x="Value", y="Feature", data=feature_imp.sort_values(by="Value", ascending=False))
@@ -1238,29 +1252,48 @@ class Ui_MainWindow(object):
             plt.savefig("importance.jpg")
             plt.show()              
 
-            # Calculate evaluation metrics
-            mse_train = mean_squared_error(y_train, rf_model.predict(X_train))
-            mse_test = mean_squared_error(y_test, rf_model.predict(X_test))
-            rmse_train = np.sqrt(mse_train)
-            rmse_test = np.sqrt(mse_test)
-            mae_train = mean_absolute_error(y_train, rf_model.predict(X_train))
-            mae_test = mean_absolute_error(y_test, rf_model.predict(X_test))
-            r2_train = rf_model.score(X_train, y_train)
-            r2_test = rf_model.score(X_test, y_test)
-            cv_results_mse = cross_validate(rf_model, X, y, cv=cv, scoring="neg_mean_squared_error")
-            cv_results_rmse = cross_validate(rf_model, X, y, cv=cv, scoring="neg_root_mean_squared_error")
+            if model_type == "classifier":
+                # Calculate evaluation metrics for classifier
+                accuracy_train = accuracy_score(y_train, rf_model.predict(X_train))
+                accuracy_test = accuracy_score(y_test, rf_model.predict(X_test))
+                r2_train = rf_model.score(X_train, y_train)
+                r2_test = rf_model.score(X_test, y_test)
+                cv_results = cross_validate(rf_model, X, y, cv=cv, scoring=["accuracy", "precision", "recall", "f1", "roc_auc"])
 
-            # Prepare results text
-            results_text = (f"MSE Train: {mse_train:.3f}\n"
-                            f"MSE Test: {mse_test:.3f}\n"
-                            f"RMSE Train: {rmse_train:.3f}\n"
-                            f"RMSE Test: {rmse_test:.3f}\n"
-                            f"MAE Train: {mae_train:.3f}\n"
-                            f"MAE Test: {mae_test:.3f}\n"
-                            f"R2 Train: {r2_train:.3f}\n"
-                            f"R2 Test: {r2_test:.3f}\n"
-                            f"Cross Validate MSE: {-cv_results_mse['test_score'].mean():.3f}\n"
-                            f"Cross Validate RMSE: {-cv_results_rmse['test_score'].mean():.3f}\n")
+                # Prepare results text
+                results_text = (f"Accuracy Train: {accuracy_train:.3f}\n"
+                                f"Accuracy Test: {accuracy_test:.3f}\n"
+                                f"R2 Train: {r2_train:.3f}\n"
+                                f"R2 Test: {r2_test:.3f}\n"
+                                f"Cross Validate Accuracy: {cv_results['test_accuracy'].mean():.3f}\n"
+                                f"Cross Validate Precision: {cv_results['test_precision'].mean():.3f}\n"
+                                f"Cross Validate Recall: {cv_results['test_recall'].mean():.3f}\n"
+                                f"Cross Validate F1 Score: {cv_results['test_f1'].mean():.3f}\n"
+                                f"Cross Validate Roc Auc: {cv_results['test_roc_auc'].mean():.3f}\n")
+            else:
+                # Calculate evaluation metrics for regressor
+                mse_train = mean_squared_error(y_train, rf_model.predict(X_train))
+                mse_test = mean_squared_error(y_test, rf_model.predict(X_test))
+                rmse_train = np.sqrt(mse_train)
+                rmse_test = np.sqrt(mse_test)
+                mae_train = mean_absolute_error(y_train, rf_model.predict(X_train))
+                mae_test = mean_absolute_error(y_test, rf_model.predict(X_test))
+                r2_train = rf_model.score(X_train, y_train)
+                r2_test = rf_model.score(X_test, y_test)
+                cv_results_mse = cross_validate(rf_model, X, y, cv=cv, scoring="neg_mean_squared_error")
+                cv_results_rmse = cross_validate(rf_model, X, y, cv=cv, scoring="neg_root_mean_squared_error")
+
+                # Prepare results text
+                results_text = (f"MSE Train: {mse_train:.3f}\n"
+                                f"MSE Test: {mse_test:.3f}\n"
+                                f"RMSE Train: {rmse_train:.3f}\n"
+                                f"RMSE Test: {rmse_test:.3f}\n"
+                                f"MAE Train: {mae_train:.3f}\n"
+                                f"MAE Test: {mae_test:.3f}\n"
+                                f"R2 Train: {r2_train:.3f}\n"
+                                f"R2 Test: {r2_test:.3f}\n"
+                                f"Cross Validate MSE: {-cv_results_mse['test_score'].mean():.3f}\n"
+                                f"Cross Validate RMSE: {-cv_results_rmse['test_score'].mean():.3f}\n")
 
             # Display results in a message box
             msg_box = QMessageBox()
@@ -1269,59 +1302,35 @@ class Ui_MainWindow(object):
             msg_box.setModal(True)
             msg_box.exec_()
 
-            if self.chk_SaveModel.isChecked():
-                # Save the trained model to a file
-                joblib.dump(rf_model, "rf_model.pkl")
+            # Save the trained model to a file
+            joblib.dump(rf_model, "rf_model.pkl")
         
         except Exception as e:
             # Handle any unexpected exceptions
             QMessageBox.warning(None, "Error", f"An error occurred: {e}")
 
-    def load_model(self):
-        """
-        Load the trained Random Forest model from a file.
-
-        Returns:
-            model_disc (RandomForestRegressor): The loaded Random Forest model.
-        """
-        try:
-            model_disc = joblib.load("rf_model.pkl")
-            return model_disc
-        except Exception as e:
-            QMessageBox.warning(None, "Error", f"An error occurred while loading the model: {e}")
-            return None
-
     def Predict(self):
-        """
-        Predict using the loaded model and a random sample from the data.
-
-        Returns:
-            predictions (np.array): The predicted values.
-        """
         try:
             target = self.txt_TargetName.text()
-            X = self.dataFrame.drop(target, axis=1)
-            random_baseballer = X.sample(1).values.tolist()[0]      
-            model_disc = self.load_model()
-            if model_disc is None:
-                raise ValueError("Model could not be loaded.")
+            if target not in self.dataFrame.columns:
+                raise ValueError("Target column name is not in the dataframe")
 
-            # Making prediction
-            random_baseballer_df = pd.DataFrame([random_baseballer], columns=X.columns)
-            predictions = model_disc.predict(random_baseballer_df)
+            predict_dataFrame = self.dataFrame.drop(target, axis=1)
+            column_names = predict_dataFrame.columns.tolist()
 
-            # Prepare the input data and prediction results text
-            input_data_text = "\n".join([f"{col}: {val}" for col, val in zip(X.columns, random_baseballer)])
-            prediction_text = f"Prediction: {predictions[0]:.3f}"
+            column_max_min_values = {}
 
-            # Display the input data and predictions in a message box
-            msg_box = QMessageBox()
-            msg_box.setWindowTitle("Prediction Results")
-            msg_box.setText(f"Input Data:\n{input_data_text}\n\n{prediction_text}")
-            msg_box.setModal(True)
-            msg_box.exec_()
+            for column in column_names:
+                unique_values = self.dataFrame[column].unique()
+                if self.dataFrame[column].dtype == bool or set(unique_values).issubset({0, 1}):
+                    column_max_min_values[column] = "boolean"
+                else:
+                    max_value = self.dataFrame[column].max()
+                    min_value = self.dataFrame[column].min()
+                    column_max_min_values[column] = {"Max Value": max_value,
+                                                    "Min Value": min_value}
 
-            return predictions
+            self.predict_form = Predict.Predict(column_names, column_max_min_values)
+            self.predict_form.show()
         except Exception as e:
-            QMessageBox.warning(None, "Error", f"An error occurred during prediction: {e}")
-            return None
+            QMessageBox.warning(self, "Error", f"An error occurred during prediction setup: {e}")
