@@ -19,7 +19,7 @@ The Data Analysis Program is a desktop application developed with PyQt5, Pandas,
   - View the head and tail of the dataset.
     ![5](https://github.com/anlbora/Seaborn-Data-Analysis/assets/100442507/c1240d97-2367-4181-887b-419a4da99756)
   - Display data types of each column.
-    ![6](https://github.com/anlbora/Seaborn-Data-Analysis/assets/a100442507/b7b2908c-f5dc-439a-84bb-9da555c51e1c)
+    ![6](https://github.com/anlbora/Seaborn-Data-Analysis/assets/100442507/306d34cb-2fa2-4270-8622-83eaf5c9efb8)
   - Show the sum of null values for each column and fill NA values. Options to ignore "0" values and encode boolean values.
     ![7](https://github.com/anlbora/Seaborn-Data-Analysis/assets/100442507/50887ab7-2151-4703-b9e4-a60a3acf1381)
   - View dataset's statistical values.
