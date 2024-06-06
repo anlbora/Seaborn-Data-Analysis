@@ -21,21 +21,28 @@ pd.set_option("display.width", 500)
 pd.set_option("display.float_format", lambda x: "%.4f" % x)
 
 
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
 class Ui_MainWindow(QMainWindow):
+
     def __init__(self):
         super(Ui_MainWindow, self).__init__()
         self.dataFrame = None
+        
         self.setupUi(self)
+        
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1090, 800)
-        MainWindow.setMinimumSize(QtCore.QSize(1090, 800))
-        MainWindow.setMaximumSize(QtCore.QSize(1090, 800))
+        MainWindow.resize(1090, 1000)
+        MainWindow.setMinimumSize(QtCore.QSize(1090, 1000))
+        MainWindow.setMaximumSize(QtCore.QSize(1090, 1000))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox.setGeometry(QtCore.QRect(11, 12, 291, 761))
+        self.groupBox.setGeometry(QtCore.QRect(11, 12, 291, 951))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -52,17 +59,6 @@ class Ui_MainWindow(QMainWindow):
         self.verticalLayout_6.setObjectName("verticalLayout_6")
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setObjectName("formLayout")
-        self.label = QtWidgets.QLabel(self.groupBox)
-        self.label.setObjectName("label")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label)
-        self.txt_data_name = QtWidgets.QLineEdit(self.groupBox)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.txt_data_name.sizePolicy().hasHeightForWidth())
-        self.txt_data_name.setSizePolicy(sizePolicy)
-        self.txt_data_name.setObjectName("txt_data_name")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.txt_data_name)
         self.txt_head_number = QtWidgets.QLineEdit(self.groupBox)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -70,7 +66,7 @@ class Ui_MainWindow(QMainWindow):
         sizePolicy.setHeightForWidth(self.txt_head_number.sizePolicy().hasHeightForWidth())
         self.txt_head_number.setSizePolicy(sizePolicy)
         self.txt_head_number.setObjectName("txt_head_number")
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.SpanningRole, self.txt_head_number)
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.SpanningRole, self.txt_head_number)
         self.btn_tail = QtWidgets.QPushButton(self.groupBox)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -78,7 +74,7 @@ class Ui_MainWindow(QMainWindow):
         sizePolicy.setHeightForWidth(self.btn_tail.sizePolicy().hasHeightForWidth())
         self.btn_tail.setSizePolicy(sizePolicy)
         self.btn_tail.setObjectName("btn_tail")
-        self.formLayout.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.btn_tail)
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.LabelRole, self.btn_tail)
         self.btn_head = QtWidgets.QPushButton(self.groupBox)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -86,7 +82,7 @@ class Ui_MainWindow(QMainWindow):
         sizePolicy.setHeightForWidth(self.btn_head.sizePolicy().hasHeightForWidth())
         self.btn_head.setSizePolicy(sizePolicy)
         self.btn_head.setObjectName("btn_head")
-        self.formLayout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.btn_head)
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.btn_head)
         self.btn_shape = QtWidgets.QPushButton(self.groupBox)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -94,7 +90,7 @@ class Ui_MainWindow(QMainWindow):
         sizePolicy.setHeightForWidth(self.btn_shape.sizePolicy().hasHeightForWidth())
         self.btn_shape.setSizePolicy(sizePolicy)
         self.btn_shape.setObjectName("btn_shape")
-        self.formLayout.setWidget(4, QtWidgets.QFormLayout.LabelRole, self.btn_shape)
+        self.formLayout.setWidget(5, QtWidgets.QFormLayout.LabelRole, self.btn_shape)
         self.txt_shape = QtWidgets.QLineEdit(self.groupBox)
         self.txt_shape.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
@@ -103,25 +99,25 @@ class Ui_MainWindow(QMainWindow):
         sizePolicy.setHeightForWidth(self.txt_shape.sizePolicy().hasHeightForWidth())
         self.txt_shape.setSizePolicy(sizePolicy)
         self.txt_shape.setObjectName("txt_shape")
-        self.formLayout.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.txt_shape)
+        self.formLayout.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.txt_shape)
         self.btn_data_types = QtWidgets.QPushButton(self.groupBox)
         self.btn_data_types.setObjectName("btn_data_types")
-        self.formLayout.setWidget(5, QtWidgets.QFormLayout.SpanningRole, self.btn_data_types)
+        self.formLayout.setWidget(6, QtWidgets.QFormLayout.SpanningRole, self.btn_data_types)
         self.btn_none_values = QtWidgets.QPushButton(self.groupBox)
         self.btn_none_values.setObjectName("btn_none_values")
-        self.formLayout.setWidget(6, QtWidgets.QFormLayout.SpanningRole, self.btn_none_values)
-        self.btn_data_information = QtWidgets.QPushButton(self.groupBox)
-        self.btn_data_information.setObjectName("btn_data_information")
-        self.formLayout.setWidget(8, QtWidgets.QFormLayout.SpanningRole, self.btn_data_information)
+        self.formLayout.setWidget(7, QtWidgets.QFormLayout.SpanningRole, self.btn_none_values)
         self.btn_data_describe = QtWidgets.QPushButton(self.groupBox)
         self.btn_data_describe.setObjectName("btn_data_describe")
-        self.formLayout.setWidget(7, QtWidgets.QFormLayout.SpanningRole, self.btn_data_describe)
+        self.formLayout.setWidget(8, QtWidgets.QFormLayout.SpanningRole, self.btn_data_describe)
+        self.btn_data_information = QtWidgets.QPushButton(self.groupBox)
+        self.btn_data_information.setObjectName("btn_data_information")
+        self.formLayout.setWidget(9, QtWidgets.QFormLayout.SpanningRole, self.btn_data_information)
+        self.cBox_datasetNames = QtWidgets.QComboBox(self.groupBox)
+        self.cBox_datasetNames.setObjectName("cBox_datasetNames")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.SpanningRole, self.cBox_datasetNames)
         self.btn_load_data = QtWidgets.QPushButton(self.groupBox)
         self.btn_load_data.setObjectName("btn_load_data")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.btn_load_data)
-        self.btn_opendata = QtWidgets.QPushButton(self.groupBox)
-        self.btn_opendata.setObjectName("btn_opendata")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.btn_opendata)
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.SpanningRole, self.btn_load_data)
         self.verticalLayout_6.addLayout(self.formLayout)
         self.groupBox_3 = QtWidgets.QGroupBox(self.groupBox)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
@@ -131,7 +127,7 @@ class Ui_MainWindow(QMainWindow):
         self.groupBox_3.setSizePolicy(sizePolicy)
         self.groupBox_3.setObjectName("groupBox_3")
         self.layoutWidget = QtWidgets.QWidget(self.groupBox_3)
-        self.layoutWidget.setGeometry(QtCore.QRect(10, 23, 251, 181))
+        self.layoutWidget.setGeometry(QtCore.QRect(10, 23, 251, 189))
         self.layoutWidget.setObjectName("layoutWidget")
         self.formLayout_2 = QtWidgets.QFormLayout(self.layoutWidget)
         self.formLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -213,7 +209,7 @@ class Ui_MainWindow(QMainWindow):
         self.btn_refresh_table.setObjectName("btn_refresh_table")
         self.verticalLayout_6.addWidget(self.btn_refresh_table)
         self.groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_2.setGeometry(QtCore.QRect(312, 12, 771, 761))
+        self.groupBox_2.setGeometry(QtCore.QRect(312, 12, 771, 951))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -235,7 +231,6 @@ class Ui_MainWindow(QMainWindow):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        MainWindow.setTabOrder(self.txt_data_name, self.btn_load_data)
         MainWindow.setTabOrder(self.btn_load_data, self.txt_head_number)
         MainWindow.setTabOrder(self.txt_head_number, self.btn_tail)
         MainWindow.setTabOrder(self.btn_tail, self.btn_shape)
@@ -254,7 +249,6 @@ class Ui_MainWindow(QMainWindow):
         MainWindow.setTabOrder(self.table_data, self.txt_shape)
 
         self.btn_load_data.clicked.connect(self.load_data)
-        self.btn_opendata.clicked.connect(self.open_data)
         self.btn_shape.clicked.connect(self.show_shape)
         self.btn_head.clicked.connect(self.show_df_head)
         self.btn_tail.clicked.connect(self.show_df_tail)
@@ -271,11 +265,11 @@ class Ui_MainWindow(QMainWindow):
         self.btn_RFModel.clicked.connect(self.RF_Model)
         self.btn_Predict.clicked.connect(self.Predict)
 
+        self.load_seaborn_datasets()
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Data Visualizer Program"))
-        self.label.setText(_translate("MainWindow", "Data Name:"))
-        self.txt_data_name.setPlaceholderText(_translate("MainWindow", "Dataset"))
         self.txt_head_number.setToolTip(_translate("MainWindow", "Numeric value of for your choice of first or last of dataset"))
         self.txt_head_number.setPlaceholderText(_translate("MainWindow", "5"))
         self.btn_tail.setToolTip(_translate("MainWindow", "Shows the last rows of the dataset for desired number"))
@@ -288,13 +282,12 @@ class Ui_MainWindow(QMainWindow):
         self.btn_data_types.setText(_translate("MainWindow", "Data Types"))
         self.btn_none_values.setToolTip(_translate("MainWindow", "Shows the sum of none values for each column in dataset"))
         self.btn_none_values.setText(_translate("MainWindow", "None Values"))
-        self.btn_data_information.setToolTip(_translate("MainWindow", "Shows the information for each column"))
-        self.btn_data_information.setText(_translate("MainWindow", "Data Information"))
         self.btn_data_describe.setToolTip(_translate("MainWindow", "Shows the statistical values of columns"))
         self.btn_data_describe.setText(_translate("MainWindow", "Data Describe"))
+        self.btn_data_information.setToolTip(_translate("MainWindow", "Shows the information for each column"))
+        self.btn_data_information.setText(_translate("MainWindow", "Data Information"))
         self.btn_load_data.setToolTip(_translate("MainWindow", "Loads the example dataset from the seaborn library"))
         self.btn_load_data.setText(_translate("MainWindow", "Load Data"))
-        self.btn_opendata.setText(_translate("MainWindow", "Open Data"))
         self.groupBox_3.setTitle(_translate("MainWindow", "Create Machine Learning Model"))
         self.btn_FillNoneValues.setText(_translate("MainWindow", "Fill NA Values"))
         self.btn_Encode.setText(_translate("MainWindow", "Encode"))
@@ -319,6 +312,11 @@ class Ui_MainWindow(QMainWindow):
         self.btn_refresh_table.setToolTip(_translate("MainWindow", "Refresh the table to beginning"))
         self.btn_refresh_table.setText(_translate("MainWindow", "Refresh Table"))
 
+    def load_seaborn_datasets(self):
+        datasets_name = sns.get_dataset_names()
+        self.cBox_datasetNames.addItem("None")
+        self.cBox_datasetNames.addItems(datasets_name)
+
     def load_data(self):
         """
         Load data from a dataset specified by the user input and populate a QTableWidget.
@@ -331,19 +329,47 @@ class Ui_MainWindow(QMainWindow):
         """
         try:
 
-            data_name = self.txt_data_name.text().strip()
+            data_name = self.cBox_datasetNames.currentText()
                 
-            if data_name == "":
-                QMessageBox.warning(None, "Error", "Please enter a dataset name.")
-                return None
-                
-                # Load the dataset using Seaborn and convert it to a pandas DataFrame
+            if data_name == "None":
+                try:
+            
+                    dataset_path, _ = QFileDialog.getOpenFileName(None, "Select Dataset File", "", "CSV Files (*.csv);;All Files (*)")
+                    if not dataset_path:
+                        QMessageBox.warning(None, "Error", "No file selected.")
+                        return None
+
+                    self.dataFrame = pd.read_csv(dataset_path)
+                        
+                    # Get the dimensions of the DataFrame
+                    num_rows, num_cols = self.dataFrame.shape
+
+                    # Clear any existing content in the table widget
+                    self.table_data.clear()
+
+                    # Set the number of rows and columns in the table widget
+                    self.table_data.setRowCount(num_rows)
+                    self.table_data.setColumnCount(num_cols)
+
+                    # Set column names based on the DataFrame's columns
+                    column_names = list(self.dataFrame.columns)
+                    self.table_data.setHorizontalHeaderLabels(column_names)
+
+                    # Populate the table widget with data from the DataFrame
+                    for i in range(num_rows):
+                        for j in range(num_cols):
+                            item = QTableWidgetItem(str(self.dataFrame.iat[i, j]))
+                            self.table_data.setItem(i, j, item)
+
+                    return self.dataFrame
+
+                except Exception as e:
+                    # If an error occurs, display a warning message with details of the error
+                    QMessageBox.warning(None, "Error", f"An error occurred: {e}")
+                    return None
 
             data = sns.load_dataset(data_name)
             self.dataFrame = pd.DataFrame(data)
-                
-            # Disable the text input field to prevent further changes
-            self.txt_data_name.setEnabled(False)
 
             # Get the dimensions of the DataFrame
             num_rows, num_cols = self.dataFrame.shape
@@ -371,9 +397,9 @@ class Ui_MainWindow(QMainWindow):
             # If an error occurs, display a warning message with details of the error
             QMessageBox.warning(None, "Error", f"An error occurred: {e}")
             return None
-        
+    """"
     def open_data(self):
-        """
+
         Load data from a dataset specified by the user input and populate a QTableWidget.
 
         This method interacts with a graphical user interface (GUI) to load a dataset using
@@ -381,7 +407,7 @@ class Ui_MainWindow(QMainWindow):
 
         Returns:
             DataFrame or None: Loaded DataFrame if successful, None otherwise.
-        """
+
         try:
             
             dataset_path, _ = QFileDialog.getOpenFileName(None, "Select Dataset File", "", "CSV Files (*.csv);;All Files (*)")
@@ -417,6 +443,7 @@ class Ui_MainWindow(QMainWindow):
             # If an error occurs, display a warning message with details of the error
             QMessageBox.warning(None, "Error", f"An error occurred: {e}")
             return None
+        """
 
     def show_shape(self):
         """
