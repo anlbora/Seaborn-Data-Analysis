@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>1090</width>
-    <height>800</height>
+    <height>1000</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>1090</width>
-    <height>800</height>
+    <height>1000</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>1090</width>
-    <height>800</height>
+    <height>1000</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
       <x>11</x>
       <y>12</y>
       <width>291</width>
-      <height>761</height>
+      <height>951</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -54,27 +54,7 @@
     <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
       <layout class="QFormLayout" name="formLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Data Name:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="txt_data_name">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="placeholderText">
-          <string>Dataset</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2">
+       <item row="3" column="0" colspan="2">
         <widget class="QLineEdit" name="txt_head_number">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -90,7 +70,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QPushButton" name="btn_tail">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -106,7 +86,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <widget class="QPushButton" name="btn_head">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -122,7 +102,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="5" column="0">
         <widget class="QPushButton" name="btn_shape">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -138,7 +118,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="5" column="1">
         <widget class="QLineEdit" name="txt_shape">
          <property name="enabled">
           <bool>true</bool>
@@ -151,7 +131,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0" colspan="2">
+       <item row="6" column="0" colspan="2">
         <widget class="QPushButton" name="btn_data_types">
          <property name="toolTip">
           <string>Shows the data types of columns in dataset</string>
@@ -161,7 +141,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0" colspan="2">
+       <item row="7" column="0" colspan="2">
         <widget class="QPushButton" name="btn_none_values">
          <property name="toolTip">
           <string>Shows the sum of none values for each column in dataset</string>
@@ -172,16 +152,6 @@
         </widget>
        </item>
        <item row="8" column="0" colspan="2">
-        <widget class="QPushButton" name="btn_data_information">
-         <property name="toolTip">
-          <string>Shows the information for each column</string>
-         </property>
-         <property name="text">
-          <string>Data Information</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0" colspan="2">
         <widget class="QPushButton" name="btn_data_describe">
          <property name="toolTip">
           <string>Shows the statistical values of columns</string>
@@ -191,20 +161,26 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="9" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_data_information">
+         <property name="toolTip">
+          <string>Shows the information for each column</string>
+         </property>
+         <property name="text">
+          <string>Data Information</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QComboBox" name="cBox_datasetNames"/>
+       </item>
+       <item row="2" column="0" colspan="2">
         <widget class="QPushButton" name="btn_load_data">
          <property name="toolTip">
           <string>Loads the example dataset from the seaborn library</string>
          </property>
          <property name="text">
           <string>Load Data</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="btn_opendata">
-         <property name="text">
-          <string>Open Data</string>
          </property>
         </widget>
        </item>
@@ -227,7 +203,7 @@
           <x>10</x>
           <y>23</y>
           <width>251</width>
-          <height>181</height>
+          <height>189</height>
          </rect>
         </property>
         <layout class="QFormLayout" name="formLayout_2">
@@ -412,7 +388,7 @@
       <x>312</x>
       <y>12</y>
       <width>771</width>
-      <height>761</height>
+      <height>951</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -434,7 +410,6 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <tabstops>
-  <tabstop>txt_data_name</tabstop>
   <tabstop>btn_load_data</tabstop>
   <tabstop>txt_head_number</tabstop>
   <tabstop>btn_tail</tabstop>
